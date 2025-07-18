@@ -1,0 +1,49 @@
+smart_library/
+├── app/
+│   ├── __init__.py
+│   ├── main.py                ✅ App entry — will include all routers
+│   ├── database.py            ✅ DB connection via SQLAlchemy
+│   ├── models.py              ✅ Central place for SQLAlchemy models (can split later)
+│   ├── schemas.py             ✅ All Pydantic request/response models
+│   ├── auth_utils.py          ✅ JWT encode/decode logic, expiry 
+│   ├── routes/                
+│      ├── auth.py             ✅ JWT encode, decode, token generator, expiry, etc.
+│      ├── admin.py            ✅ Your endpoints: login, report, admin dashboard
+│      ├── user.py             ✅ Borrow/return/search user operations
+│      └── books.py            ✅ Inventory management
+│   ├── crud/
+│     ├── admin_crud.py        ✅ Your logic for reports, admin ops
+│     ├── user_crud.py         ✅ Borrow, return, limit checks
+│     └── books_crud.py        ✅ Add, update, delete, search books
+├── alembic/                   ✅ Will auto-fill on `alembic init`
+│   └── versions/
+├── alembic.ini                ✅ Alembic config
+├── requirements.txt           ✅ All team should use this for pip install
+├── Dockerfile                 ✅ Later: containerize the whole app
+└── docker-compose.yml         ✅ Optional: DB + API in one go
+
+
+python -m venv venv...
+venv\Scripts\activate
+mkdir app
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip list
+pip install alembic
+alembic init alembic
+In alembic.ini, and update this line with your PostgreSQL connection string:
+sqlalchemy.url = postgresql://postgres:postgres@localhost:5432/smart_library
+In alembic/env.py
+
+Find this section:
+# add your model's MetaData object here
+# for 'autogenerate' support
+# from myapp import mymodel
+# target_metadata = mymodel.Base.metadata
+🔁 Replace with:
+from app.database import Base  # 👈 import your Base
+from app import models         # 👈 import your models
+target_metadata = Base.metadata
+
+uvicorn app.main:app --reload
+
