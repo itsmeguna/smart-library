@@ -17,7 +17,7 @@ app = FastAPI()
 
 app.include_router(auth.router)
 app.include_router(user.router)
-'''
+"""
 # Security scheme for Swagger
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -41,6 +41,6 @@ def custom_openapi():
         for method in path.values():
             method.setdefault("security", [{"BearerAuth": []}])
     app.openapi_schema = openapi_schema
-    return app.openapi_schema '''
+    return app.openapi_schema 
 
-#app.openapi = custom_openapi
+#app.openapi = custom_openapi"""
