@@ -1,0 +1,16 @@
+# Ignore virtual environment
+venv/
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# VSCode settings
+.vscode/
+
+# Alembic migrations (optional if needed only on prod)
+*.log
+
+# Environment files
+.env
