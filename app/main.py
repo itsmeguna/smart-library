@@ -6,7 +6,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor 
 from app.routes import admin  
 from . import models
-#from app.routes import balance
+from app.routes import user
 #from app.routes import summary
 from app.routes import auth
 
@@ -53,7 +53,7 @@ def root():
 # Include expense-related endpoints
 app.include_router(auth.router)
 app.include_router(admin.router)
-
+app.include_router(user.router)
 
 
 

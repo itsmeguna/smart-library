@@ -15,6 +15,21 @@ class Admin(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default= (text('now()')), nullable=False)
 
+
+# Book Table
+
+class Book(Base):
+    __tablename__ = 'books'
+    id = Column(Integer, primary_key=True, index=True)  
+    title = Column(String(150), nullable=False)
+    author = Column(String(100), nullable=False)
+    isbn = Column(String(13), unique=True, nullable=False)
+    copies_available = Column(Integer, default=1)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    #borrowed_records = relationship("BorrowedBook", back_populates="book")
+
+    
 # User Table (students & faculty only)
 class User(Base):
     __tablename__ = 'users'
@@ -29,19 +44,6 @@ class User(Base):
     borrowed_books = relationship("BorrowedBook", back_populates="user")
 
 
-# Book Table
-
-class Book(Base):
-    __tablename__ = 'books'
-    id = Column(Integer, primary_key=True, index=True)  
-    title = Column(String(150), nullable=False)
-    author = Column(String(100), nullable=False)
-    isbn = Column(String(13), unique=True, nullable=False)
-    copies_available = Column(Integer, default=1)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    borrowed_records = relationship("BorrowedBook", back_populates="book")
-
 # Borrowed Books Table
 
 class BorrowedBook(Base):
@@ -50,12 +52,13 @@ class BorrowedBook(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     book_id = Column(Integer, ForeignKey('books.id'), nullable=False)
+    isbn = Column(String, ForeignKey('books.isbn'), nullable=False) 
     borrow_date = Column(DateTime(timezone=True), server_default=func.now())
     due_date = Column(DateTime(timezone=True), nullable=False)
     return_date = Column(DateTime(timezone=True), nullable=True)
 
     user = relationship("User", back_populates="borrowed_books")
-    book = relationship("Book", back_populates="borrowed_records")
+    book = relationship("Book", foreign_keys=[book_id])
 
 
 print("✅ models.py executed")

@@ -46,4 +46,5 @@ from app import models         # 👈 import your models
 target_metadata = Base.metadata
 
 uvicorn app.main:app --reload
-
+alembic revision --autogenerate -m "Add isbn column to borrowed_books"
+alembic upgrade head                                                            

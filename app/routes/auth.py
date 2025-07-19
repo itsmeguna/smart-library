@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-"""# 🔐 Admin Registration
+# 🔐 Admin Registration
 @router.post("/admin_register", response_model=schemas.AdminOut)
 def register_admin(admin: schemas.AdminCreate, db: Session = Depends(database.get_db)):
     existing_admin = db.query(models.Admin).filter(models.Admin.email == admin.email).first()
@@ -29,7 +29,7 @@ def register_admin(admin: schemas.AdminCreate, db: Session = Depends(database.ge
     db.refresh(new_admin)
 
     logger.info(f"✅ Admin registered: {new_admin.name} ({new_admin.email})")
-    return new_admin"""
+    return new_admin
 
 
 # 🔐 Admin Login
