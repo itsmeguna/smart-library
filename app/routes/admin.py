@@ -3,11 +3,11 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from datetime import datetime
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.schemas import BookCreate, BookOut,ActiveUserOut, MostBorrowedBook, MonthlyUsageReportItem,OverdueBookItem
+from app.schemas import BookCreate, BookOut,ActiveUserOut, MostBorrowedBook, MonthlyUsageReportItem,OverdueBookItem,UserOut
 from app.models import Admin
 from app.auth_utils import get_current_admin
 from app.crud.books_crud import create_book, get_books, delete_book
-from app.crud.admin_crud import get_active_users_with_books, get_most_borrowed_books, get_active_users, get_monthly_usage_report, get_all_overdue_books
+from app.crud.admin_crud import get_active_users_with_books, get_most_borrowed_books, get_active_users, get_monthly_usage_report, get_all_overdue_books,get_all_users
 from app.auth_utils import admin_required
 from typing import List
 
@@ -33,6 +33,13 @@ def list_books(db: Session = Depends(get_db), admin: Admin = Depends(get_current
     books = get_books(db)
     logger.info(f"Books listed by Admin {admin.name}. Total: {len(books)}")
     return books
+
+@router.get("/users", response_model=List[UserOut],status_code=status.HTTP_200_OK)
+def read_users(db: Session = Depends(get_db),admin: Admin = Depends(get_current_admin)):
+    all_user=get_all_users(db)
+    logger.info(f"Books listed by Admin {admin.name}. Total: {len(all_user)}")
+    return all_user 
+
 
 # Delete book by ISBN
 @router.delete("/books/{isbn}", status_code=status.HTTP_200_OK)
@@ -70,3 +77,4 @@ def monthly_usage_report(
 def overdue_books_report(db: Session = Depends(get_db)):
     logger.info("Admin requested overdue books report.")
     return get_all_overdue_books(db)
+

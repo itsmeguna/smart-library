@@ -183,3 +183,6 @@ def get_all_overdue_books(db: Session):
         "due_date": entry.due_date,
         "overdue": datetime.now(timezone.utc) > entry.due_date  # Check overdue again with timezone-aware comparison
     } for entry in overdue_entries]
+
+def get_all_users(db: Session):
+    return db.query(User).all()

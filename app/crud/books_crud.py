@@ -5,6 +5,8 @@ from app.schemas import BookCreate, BookUpdate
 from typing import List
 from fastapi import HTTPException
 import traceback
+from app.models import User
+ 
 
 def create_book(db: Session, books: List[BookCreate]):
     try:
@@ -73,3 +75,6 @@ def search_books(db: Session, query: str) -> List[Book]:
     except SQLAlchemyError:
         print (traceback.format_exc())
         raise HTTPException(status_code=500, detail="Failed to search books.")
+
+
+
