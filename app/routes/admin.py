@@ -6,7 +6,7 @@ from app.database import get_db
 from app.schemas import BookCreate, BookOut,ActiveUserOut, MostBorrowedBook, MonthlyUsageReportItem,OverdueBookItem
 from app.models import Admin
 from app.auth_utils import get_current_admin
-from app.crud.books_curd import create_book, get_books, delete_book
+from app.crud.books_crud import create_book, get_books, delete_book
 from app.crud.admin_crud import get_active_users_with_books, get_most_borrowed_books, get_active_users, get_monthly_usage_report, get_all_overdue_books
 from app.auth_utils import admin_required
 from typing import List

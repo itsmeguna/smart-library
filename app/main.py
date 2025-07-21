@@ -7,7 +7,7 @@ from psycopg2.extras import RealDictCursor
 from app.routes import admin  
 from . import models
 from app.routes import user
-#from app.routes import summary
+from app.routes import books
 from app.routes import auth
 
 
@@ -17,7 +17,7 @@ from app.routes import auth
 models.Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI
-app = FastAPI(title="Expense Tracker")
+app = FastAPI(title="Smart Library")
 
 # Allow frontend connections (CORS)
 origins = [
@@ -54,6 +54,7 @@ def root():
 app.include_router(auth.router)
 app.include_router(admin.router)
 app.include_router(user.router)
+app.include_router(books.router)
 
 
 

@@ -9,14 +9,14 @@ import logging
 from app import models, schemas, database, auth_utils
 from app.auth_utils import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
-router = APIRouter(prefix="/login", tags=["Admin Authentication"])
+router = APIRouter(prefix="/admin", tags=["Admin Authentication"])
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 # 🔐 Admin Registration
-@router.post("/admin_register", response_model=schemas.AdminOut)
+@router.post("/register", response_model=schemas.AdminOut)
 def register_admin(admin: schemas.AdminCreate, db: Session = Depends(database.get_db)):
     existing_admin = db.query(models.Admin).filter(models.Admin.email == admin.email).first()
     if existing_admin:
@@ -33,7 +33,7 @@ def register_admin(admin: schemas.AdminCreate, db: Session = Depends(database.ge
 
 
 # 🔐 Admin Login
-@router.post("/admin")
+@router.post("/login")
 def login_admin(login_data: schemas.AdminLogin, db: Session = Depends(database.get_db)):
     admin = db.query(models.Admin).filter(models.Admin.email == login_data.email).first()
 

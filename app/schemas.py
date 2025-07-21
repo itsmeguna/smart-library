@@ -110,6 +110,15 @@ class BookOut(BookCreate):
     class Config:
         from_attributes = True
 
+class BookUpdate(BaseModel):
+    title: Optional[str]
+    author: Optional[str]
+    isbn: Optional[str]
+    copies_available: Optional[int]
+
+    class Config:
+        from_attributes = True        
+
 # ✅ USER & BORROW SCHEMAS ONLY        
 class UserCreate(BaseModel):
     name: str
