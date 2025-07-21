@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.schemas import BorrowRequest, BorrowedBookOut, OverdueBookOut
+from app.database import SessionLocal, engine, Base,get_db
 from app.auth_utils import get_current_user
 from app.crud import user_crud
 from app.models import User
@@ -10,12 +11,12 @@ from typing import List
 
 router = APIRouter(prefix="/user", tags=["Users"])
 
-def get_db():
+"""def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
-        db.close()
+        db.close()"""
 
 @router.post("/borrow", response_model=BorrowedBookOut)
 def borrow_book(

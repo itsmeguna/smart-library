@@ -9,6 +9,7 @@ import traceback
 def create_book(db: Session, books: List[BookCreate]):
     try:
         db_books = [Book(**book.dict()) for book in books]
+        print("DEBUG:", books, type(books[0]))
         db.add_all(db_books)
         db.commit()
         for db_book in db_books:

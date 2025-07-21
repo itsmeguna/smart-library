@@ -20,7 +20,7 @@ router = APIRouter(prefix="/admin", tags=["Admin Book Management"])
 
 #  Add book
 @router.post("/books", response_model=BookOut, status_code=status.HTTP_201_CREATED)
-def add_book(book: BookCreate, db: Session = Depends(get_db), admin: Admin = Depends(get_current_admin)):
+def add_book(book: List[BookCreate], db: Session = Depends(get_db), admin: Admin = Depends(get_current_admin)):
     new_book = create_book(db, book)
     logger.info(f"Book added by Admin {admin.name} (ISBN: {book.isbn})")
     return new_book

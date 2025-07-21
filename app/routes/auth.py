@@ -2,21 +2,22 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from app.auth_utils import create_access_token, get_current_admin
-from datetime import datetime
-from datetime import timedelta
+from app.database import get_db
+from datetime import datetime,timedelta
+
 import logging
 
 from app import models, schemas, database, auth_utils
 from app.auth_utils import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
-router = APIRouter(prefix="/admin", tags=["Admin Authentication"])
+router = APIRouter(prefix="", tags=["Authentication"])
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
+#------------------Admin Authentication Routes------------------#
 # 🔐 Admin Registration
-@router.post("/register", response_model=schemas.AdminOut)
+@router.post("/admin/register", response_model=schemas.AdminOut)
 def register_admin(admin: schemas.AdminCreate, db: Session = Depends(database.get_db)):
     existing_admin = db.query(models.Admin).filter(models.Admin.email == admin.email).first()
     if existing_admin:
@@ -33,7 +34,7 @@ def register_admin(admin: schemas.AdminCreate, db: Session = Depends(database.ge
 
 
 # 🔐 Admin Login
-@router.post("/login")
+@router.post("/admin/login") 
 def login_admin(login_data: schemas.AdminLogin, db: Session = Depends(database.get_db)):
     admin = db.query(models.Admin).filter(models.Admin.email == login_data.email).first()
 
@@ -54,7 +55,7 @@ def login_admin(login_data: schemas.AdminLogin, db: Session = Depends(database.g
 
 
 # 🧪 Optional Swagger /token endpoint for Swagger UI
-@router.post("/token")
+@router.post("/admin/token")
 def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
     admin = db.query(models.Admin).filter(models.Admin.email == form_data.username).first()
 
@@ -73,6 +74,34 @@ def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Sess
     return {"access_token": access_token, "token_type": "bearer"}
 
 # 🔐 Test Route (protected)
-@router.get("/whoami")
+@router.get("/admin/whoami")
 def protected_admin_route(current_admin: models.Admin = Depends(auth_utils.get_current_admin)):
     return {"message": f"Hello Admin, {current_admin.name}!"}
+
+#------------------User Authentication Routes------------------#
+@router.post("/users/register", response_model=schemas.UserOut)
+def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    hashed_pw = auth_utils.hash_password(user.password)
+    db_user = models.User(
+        name=user.name,
+        email=user.email,
+        password=hashed_pw,
+        role=user.role
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+@router.post("/users/login", response_model=schemas.Token)
+def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == credentials.email).first()
+    if not user or not auth_utils.verify_password(credentials.password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    access_token = auth_utils.create_access_token(data={"sub": str(user.id), "role": user.role})
+    return {"access_token": access_token, "token_type": "bearer"}
