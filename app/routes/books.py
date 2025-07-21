@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, FastAPI, Depends,HTTPException,Query
+from fastapi import APIRouter, FastAPI, Depends,HTTPException,Query, status
 from sqlalchemy.orm import Session
 from app.crud import books_crud
 from app.database import SessionLocal, engine, Base,get_db
@@ -8,15 +8,16 @@ from typing import List
 from sqlalchemy.exc import SQLAlchemyError
 import traceback
 
+
 router = APIRouter(
     tags=['Inventory']
 )
-@router.post("/books", response_model=List[schemas.BookOut])
+@router.post("/books", response_model=List[schemas.BookOut],status_code=status.HTTP_201_CREATED)
 def add_books(books: List[schemas.BookCreate], db: Session = Depends(get_db)):
     return books_crud.create_book(db, books)
 
 # ✅ Get All Books
-@router.get("/books", response_model=List[schemas.BookOut])
+@router.get("/books", response_model=List[schemas.BookOut],status_code=status.HTTP_200_OK)
 def list_books(db: Session = Depends(get_db)):
     try:
         return books_crud.get_books(db)
@@ -25,7 +26,7 @@ def list_books(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Failed to retrieve books.")
 
 # ✅ Delete a Book by ISBN
-@router.delete("/books/{isbn}")
+@router.delete("/books/{isbn}", status_code=status.HTTP_200_OK)
 def delete(isbn: str, db: Session = Depends(get_db)):
     try:
         success = books_crud.delete_book(db, isbn)
@@ -37,7 +38,7 @@ def delete(isbn: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Failed to delete book.")
 
 # ✅ Search Book by Title, Author or ISBN
-@router.get("/books/search", response_model=List[schemas.BookOut])
+@router.get("/books/search", response_model=List[schemas.BookOut],status_code=status.HTTP_200_OK)
 def search_books(q: str = Query(..., description="Search by title, author, or ISBN"),
                  db: Session = Depends(get_db)):
     try:

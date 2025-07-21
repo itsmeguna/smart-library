@@ -19,10 +19,12 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 router = APIRouter(prefix="/admin", tags=["Admin Book Management"])
 
 #  Add book
-@router.post("/books", response_model=BookOut, status_code=status.HTTP_201_CREATED)
+@router.post("/books", response_model=List[BookOut], status_code=status.HTTP_201_CREATED)
 def add_book(book: List[BookCreate], db: Session = Depends(get_db), admin: Admin = Depends(get_current_admin)):
     new_book = create_book(db, book)
-    logger.info(f"Book added by Admin {admin.name} (ISBN: {book.isbn})")
+    for b in book:
+      logger.info(f"Book added by Admin {admin.name} (ISBN: {b.isbn})")
+
     return new_book
 
 #  Get all books
