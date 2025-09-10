@@ -1,0 +1,35 @@
+h1, h2, h3 {
+  font-family: 'Segoe UI', sans-serif;
+  color: #222;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.center {
+  text-align: center;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+}
